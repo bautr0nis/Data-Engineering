@@ -1,0 +1,546 @@
++*In[1]:*+
+[source, ipython3]
+----
+!python --version
+----
+
+
++*Out[1]:*+
+----
+Python 3.7.4
+----
+
+
++*In[3]:*+
+[source, ipython3]
+----
+!pip install scikit-learn
+
+----
+
+
++*Out[3]:*+
+----
+Requirement already satisfied: scikit-learn in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (0.21.3)
+Requirement already satisfied: numpy>=1.11.0 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from scikit-learn) (1.16.5)
+Requirement already satisfied: scipy>=0.17.0 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from scikit-learn) (1.3.1)
+Requirement already satisfied: joblib>=0.11 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from scikit-learn) (0.13.2)
+----
+
+
++*In[4]:*+
+[source, ipython3]
+----
+!pip install seaborn
+----
+
+
++*Out[4]:*+
+----
+Requirement already satisfied: seaborn in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (0.9.0)
+Requirement already satisfied: matplotlib>=1.4.3 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from seaborn) (3.1.1)
+Requirement already satisfied: numpy>=1.9.3 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from seaborn) (1.16.5)
+Requirement already satisfied: pandas>=0.15.2 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from seaborn) (0.25.1)
+Requirement already satisfied: scipy>=0.14.0 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from seaborn) (1.3.1)
+Requirement already satisfied: cycler>=0.10 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from matplotlib>=1.4.3->seaborn) (0.10.0)
+Requirement already satisfied: kiwisolver>=1.0.1 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from matplotlib>=1.4.3->seaborn) (1.1.0)
+Requirement already satisfied: pyparsing!=2.0.4,!=2.1.2,!=2.1.6,>=2.0.1 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from matplotlib>=1.4.3->seaborn) (2.4.2)
+Requirement already satisfied: python-dateutil>=2.1 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from matplotlib>=1.4.3->seaborn) (2.8.0)
+Requirement already satisfied: pytz>=2017.2 in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from pandas>=0.15.2->seaborn) (2019.3)
+Requirement already satisfied: six in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from cycler>=0.10->matplotlib>=1.4.3->seaborn) (1.12.0)
+Requirement already satisfied: setuptools in c:\users\s1718c\appdata\local\continuum\anaconda3\lib\site-packages (from kiwisolver>=1.0.1->matplotlib>=1.4.3->seaborn) (41.4.0)
+----
+
+
++*In[7]:*+
+[source, ipython3]
+----
+import pandas as pd
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+import seaborn as sns
+----
+
+
++*In[14]:*+
+[source, ipython3]
+----
+mall_data = pd.read_csv ('C:\\Users\\S1718C\\Desktop\\Mall_customers.csv', # File reading
+                        names = ['Gender', 'Age', 'AnnualIncome', 'SpendingScore'], # Creating headers
+                        index_col = 0, header = 1)
+
+mall_data.head() # running mall_data
+----
+
+
++*Out[14]:*+
+----
+[cols=",,,,",options="header",]
+|==========================================
+| |Gender |Age |AnnualIncome |SpendingScore
+|2 |Male |21 |15 |81
+|3 |Female |20 |16 |6
+|4 |Female |23 |16 |77
+|5 |Female |31 |17 |40
+|6 |Female |22 |17 |76
+|==========================================
+----
+
+
++*In[15]:*+
+[source, ipython3]
+----
+mall_data.shape 
+----
+
+
++*Out[15]:*+
+----(199, 4)----
+
+
++*In[16]:*+
+[source, ipython3]
+----
+mall_data = mall_data.sample(frac=1, replace =False) # Shuffling records
+----
+
+
++*In[20]:*+
+[source, ipython3]
+----
+plt.figure (figsize =(12,8))
+
+sns.scatterplot ('AnnualIncome', #Clustering our segment by Annual Income & Spending Score
+                'SpendingScore',
+                 hue = 'Age', # coloring data by Age
+                data = mall_data,
+                s = 200)
+
+plt.show()
+----
+
+
++*Out[20]:*+
+----
+![png](output_7_0.png)
+----
+
+
++*In[21]:*+
+[source, ipython3]
+----
+features = mall_data [['AnnualIncome', 'SpendingScore']]
+features.head()
+----
+
+
++*Out[21]:*+
+----
+[cols=",,",options="header",]
+|=============================
+| |AnnualIncome |SpendingScore
+|136 |73 |88
+|150 |78 |90
+|94 |60 |40
+|126 |70 |77
+|144 |76 |87
+|=============================
+----
+
+
++*In[23]:*+
+[source, ipython3]
+----
+x =np.array(features)
+x[:10]
+----
+
+
++*Out[23]:*+
+----array([[73, 88],
+       [78, 90],
+       [60, 40],
+       [70, 77],
+       [76, 87],
+       [71,  9],
+       [21, 35],
+       [87, 92],
+       [38, 92],
+       [76, 40]], dtype=int64)----
+
+
++*In[24]:*+
+[source, ipython3]
+----
+from sklearn.cluster import KMeans
+k_mean = KMeans (n_clusters = 3) #We will try to find 3 clusters
+k_mean.fit(x) #Will start a clustering process
+----
+
+
++*Out[24]:*+
+----KMeans(algorithm='auto', copy_x=True, init='k-means++', max_iter=300,
+       n_clusters=3, n_init=10, n_jobs=None, precompute_distances='auto',
+       random_state=None, tol=0.0001, verbose=0)----
+
+
++*In[25]:*+
+[source, ipython3]
+----
+cluster_label =k_mean.labels_ #Label for each data point
+cluster_label
+----
+
+
++*Out[25]:*+
+----array([0, 0, 1, 0, 0, 2, 1, 0, 1, 2, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1,
+       2, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 2, 1, 2, 0, 2, 1, 2, 1,
+       1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 0, 1, 1, 1, 2, 1, 1, 2,
+       1, 2, 1, 2, 2, 1, 1, 2, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1,
+       1, 2, 1, 0, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2,
+       1, 2, 0, 2, 2, 0, 2, 0, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 0, 0, 1, 0, 1, 1, 1,
+       2, 2, 2, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 2, 1, 0, 0, 1, 0, 1, 2,
+       0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 0, 2, 1, 1, 1, 1, 1, 1,
+       1])----
+
+
++*In[27]:*+
+[source, ipython3]
+----
+centroids = k_mean.cluster_centers_
+centroids
+----
+
+
++*Out[27]:*+
+----array([[86.53846154, 82.12820513],
+       [44.39344262, 49.91803279],
+       [87.        , 18.63157895]])----
+
+
++*In[28]:*+
+[source, ipython3]
+----
+from sklearn.metrics import silhouette_score
+silhou_score = silhouette_score(x, cluster_label)
+silhou_score # It's a measurement how similar an object is to it's own cluster (cohesion) compared to other clusters (seperation)
+----
+
+
++*Out[28]:*+
+----0.4682420854259028----
+
+
++*In[29]:*+
+[source, ipython3]
+----
+colors = ['green', 'blue', 'purple', 'red', 'grey']
+----
+
+
++*In[31]:*+
+[source, ipython3]
+----
+plt.figure(figsize = (12, 8))
+
+plt.scatter(features ['AnnualIncome'], features ['SpendingScore'], # different clusters will be in different color
+           s=200, c= cluster_label,
+           cmap= matplotlib.colors.ListedColormap(colors), alpha = 0.5)
+
+plt.scatter (centroids [:,0], centroids [:,1], c= 'k', s=250, marker = 's') # plot the centroids for each cluster
+
+for i in range (len(centroids)): # we anitate each centroids with different number
+    plt.annotate (i, (centroids [i][0] +7, centroids [i][1]+7), fontsize =30)
+----
+
+
++*Out[31]:*+
+----
+![png](output_15_0.png)
+----
+
+
++*In[33]:*+
+[source, ipython3]
+----
+k_mean = KMeans (n_clusters = 5)
+k_mean.fit(x)
+----
+
+
++*Out[33]:*+
+----KMeans(algorithm='auto', copy_x=True, init='k-means++', max_iter=300,
+       n_clusters=5, n_init=10, n_jobs=None, precompute_distances='auto',
+       random_state=None, tol=0.0001, verbose=0)----
+
+
++*In[34]:*+
+[source, ipython3]
+----
+cluster_label = k_mean.labels_
+cluster_label
+----
+
+
++*Out[34]:*+
+----array([3, 3, 1, 3, 3, 0, 2, 3, 4, 1, 3, 4, 3, 1, 1, 1, 1, 1, 3, 3, 2, 2,
+       0, 1, 3, 3, 2, 2, 4, 1, 3, 3, 1, 1, 2, 1, 0, 4, 0, 3, 0, 1, 1, 1,
+       1, 3, 1, 1, 0, 2, 4, 4, 2, 1, 1, 1, 0, 0, 3, 1, 1, 4, 0, 1, 1, 0,
+       1, 0, 2, 0, 0, 2, 1, 0, 1, 3, 0, 2, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1,
+       2, 0, 1, 3, 2, 1, 0, 1, 1, 3, 1, 1, 1, 1, 4, 1, 0, 1, 2, 1, 1, 0,
+       4, 0, 3, 0, 0, 3, 0, 3, 1, 1, 2, 2, 0, 0, 2, 1, 1, 1, 1, 4, 4, 2,
+       1, 4, 3, 3, 1, 1, 3, 1, 2, 1, 1, 4, 3, 1, 0, 3, 3, 4, 3, 1, 1, 2,
+       0, 0, 0, 3, 1, 1, 4, 3, 3, 4, 1, 1, 3, 3, 0, 1, 3, 3, 4, 3, 1, 0,
+       3, 1, 1, 0, 4, 1, 1, 2, 1, 1, 0, 0, 1, 4, 3, 0, 1, 4, 4, 1, 1, 1,
+       4])----
+
+
++*In[35]:*+
+[source, ipython3]
+----
+centroids = k_mean.cluster_centers_
+centroids
+----
+
+
++*Out[35]:*+
+----array([[87.75      , 17.58333333],
+       [55.0875    , 49.7125    ],
+       [26.81818182, 20.09090909],
+       [86.53846154, 82.12820513],
+       [25.72727273, 79.36363636]])----
+
+
++*In[36]:*+
+[source, ipython3]
+----
+silhou_score = silhouette_score(x, cluster_label)
+silhou_score
+----
+
+
++*Out[36]:*+
+----0.5545306931884817----
+
+
++*In[37]:*+
+[source, ipython3]
+----
+plt.figure(figsize = (12, 8))
+
+plt.scatter(features ['AnnualIncome'], features ['SpendingScore'], # different clusters will be in different color
+           s=200, c= cluster_label,
+           cmap= matplotlib.colors.ListedColormap(colors), alpha = 0.5)
+
+plt.scatter (centroids [:,0], centroids [:,1], c= 'k', s=250, marker = 's') # plot the centroids for each cluster
+
+for i in range (len(centroids)): # we anitate each centroids with different number
+    plt.annotate (i, (centroids [i][0] +7, centroids [i][1]+7), fontsize =30)
+----
+
+
++*Out[37]:*+
+----
+![png](output_20_0.png)
+----
+
+
++*In[39]:*+
+[source, ipython3]
+----
+from sklearn.cluster import AgglomerativeClustering # Merges cluster
+
+agglo_cluster = AgglomerativeClustering(n_clusters = 5, linkage = 'ward') #Merges cluster by minimazing the variance
+agglo_cluster.fit(x)
+----
+
+
++*Out[39]:*+
+----AgglomerativeClustering(affinity='euclidean', compute_full_tree='auto',
+                        connectivity=None, distance_threshold=None,
+                        linkage='ward', memory=None, n_clusters=5,
+                        pooling_func='deprecated')----
+
+
++*In[40]:*+
+[source, ipython3]
+----
+agglo_cluster_label = agglo_cluster.labels_
+agglo_cluster_label
+----
+
+
++*Out[40]:*+
+----array([1, 1, 2, 1, 1, 0, 4, 1, 3, 2, 1, 3, 1, 2, 2, 2, 2, 2, 1, 1, 4, 4,
+       0, 2, 1, 1, 4, 4, 3, 2, 1, 1, 2, 2, 4, 2, 0, 3, 0, 1, 0, 2, 2, 2,
+       2, 1, 2, 2, 0, 4, 3, 3, 4, 2, 2, 2, 0, 0, 1, 2, 2, 3, 0, 2, 2, 2,
+       2, 0, 4, 0, 0, 4, 2, 0, 2, 1, 0, 4, 2, 2, 2, 2, 4, 2, 2, 0, 2, 2,
+       4, 2, 2, 1, 4, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 2, 0, 2, 4, 2, 2, 0,
+       3, 0, 1, 0, 0, 1, 0, 1, 2, 2, 4, 4, 0, 0, 4, 2, 2, 2, 2, 3, 3, 4,
+       2, 3, 1, 1, 2, 2, 1, 2, 4, 2, 2, 3, 1, 2, 0, 1, 1, 3, 1, 2, 2, 4,
+       0, 0, 0, 1, 2, 2, 3, 1, 1, 3, 2, 2, 1, 1, 0, 2, 1, 1, 2, 1, 2, 0,
+       1, 2, 2, 0, 3, 2, 2, 4, 2, 2, 2, 0, 2, 3, 1, 0, 2, 3, 3, 2, 2, 2,
+       3], dtype=int64)----
+
+
++*In[42]:*+
+[source, ipython3]
+----
+silhou_score = silhouette_score (x, agglo_cluster_label)
+silhou_score
+----
+
+
++*Out[42]:*+
+----0.5542313841001305----
+
+
++*In[43]:*+
+[source, ipython3]
+----
+plt.figure (figsize=(12, 8))
+
+plt.scatter (features ['AnnualIncome'], features ['SpendingScore'],
+            s = 200, c= agglo_cluster_label,
+            cmap =matplotlib.colors.ListedColormap(colors), alpha = 0.5)
+----
+
+
++*Out[43]:*+
+----<matplotlib.collections.PathCollection at 0x261cb157188>
+![png](output_24_1.png)
+----
+
+
++*In[44]:*+
+[source, ipython3]
+----
+from sklearn.cluster import AgglomerativeClustering
+
+agglo_cluster = AgglomerativeClustering(n_clusters = 5, linkage = 'average') #
+agglo_cluster.fit(x)
+----
+
+
++*Out[44]:*+
+----AgglomerativeClustering(affinity='euclidean', compute_full_tree='auto',
+                        connectivity=None, distance_threshold=None,
+                        linkage='average', memory=None, n_clusters=5,
+                        pooling_func='deprecated')----
+
+
++*In[45]:*+
+[source, ipython3]
+----
+agglo_cluster_label = agglo_cluster.labels_
+agglo_cluster_label
+----
+
+
++*Out[45]:*+
+----array([2, 2, 1, 2, 2, 0, 1, 2, 3, 0, 2, 3, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1,
+       0, 1, 2, 2, 1, 1, 3, 1, 2, 4, 1, 1, 1, 1, 0, 3, 0, 2, 0, 1, 0, 1,
+       1, 2, 1, 1, 0, 1, 3, 3, 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 0, 1, 1, 0,
+       1, 0, 1, 0, 0, 1, 1, 0, 1, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1,
+       1, 0, 1, 2, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 3, 1, 0, 1, 1, 1, 1, 0,
+       3, 0, 2, 0, 0, 2, 0, 2, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 3, 3, 1,
+       1, 3, 2, 4, 1, 1, 2, 1, 1, 1, 1, 3, 2, 1, 0, 2, 2, 3, 2, 1, 1, 1,
+       0, 0, 0, 2, 1, 1, 3, 2, 2, 3, 1, 1, 2, 2, 0, 1, 4, 2, 1, 2, 1, 0,
+       2, 1, 1, 0, 3, 1, 1, 1, 1, 1, 0, 0, 1, 3, 2, 0, 1, 3, 3, 1, 1, 1,
+       3], dtype=int64)----
+
+
++*In[46]:*+
+[source, ipython3]
+----
+silhou_score = silhouette_score (x, agglo_cluster_label)
+silhou_score
+----
+
+
++*Out[46]:*+
+----0.48247650624950594----
+
+
++*In[47]:*+
+[source, ipython3]
+----
+plt.figure (figsize=(12, 8))
+
+plt.scatter (features ['AnnualIncome'], features ['SpendingScore'],
+            s = 200, c= agglo_cluster_label,
+            cmap =matplotlib.colors.ListedColormap(colors), alpha = 0.5)
+----
+
+
++*Out[47]:*+
+----<matplotlib.collections.PathCollection at 0x261cc2dde08>
+![png](output_28_1.png)
+----
+
+
++*In[48]:*+
+[source, ipython3]
+----
+from sklearn.cluster import MeanShift # a clustering technique which tries to find dense blobs in the data using a kernel function - number of clusters need not be specified
+cluster_mean_shift = MeanShift (bandwidth = 25).fit(x)
+----
+
+
++*In[49]:*+
+[source, ipython3]
+----
+centroids = cluster_mean_shift.cluster_centers_
+centroids
+----
+
+
++*Out[49]:*+
+----array([[54.70238095, 49.36904762],
+       [82.25714286, 82.17142857],
+       [82.15151515, 18.15151515],
+       [27.6       , 77.08      ],
+       [26.81818182, 20.09090909]])----
+
+
++*In[53]:*+
+[source, ipython3]
+----
+silhou_score = silhouette_score (x, cluster_label)
+silhou_score
+----
+
+
++*Out[53]:*+
+----0.5545306931884817----
+
+
++*In[54]:*+
+[source, ipython3]
+----
+plt.figure(figsize = (12, 8))
+
+plt.scatter(features ['AnnualIncome'], features ['SpendingScore'], # different clusters will be in different color
+           s=200, c= cluster_label,
+           cmap= matplotlib.colors.ListedColormap(colors), alpha = 0.5)
+
+plt.scatter (centroids [:,0], centroids [:,1], c= 'k', s=250, marker = 's') # plot the centroids for each cluster
+
+for i in range (len(centroids)): # we anitate each centroids with different number
+    plt.annotate (i, (centroids [i][0] +7, centroids [i][1]+7), fontsize =30)
+----
+
+
++*Out[54]:*+
+----
+![png](output_32_0.png)
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----

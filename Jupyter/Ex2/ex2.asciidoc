@@ -1,0 +1,333 @@
++*In[1]:*+
+[source, ipython3]
+----
+import pandas as pd
+import numpy as np
+import matplotlib
+import seaborn as sns
+import matplotlib.pyplot as plt
+----
+
+
++*In[2]:*+
+[source, ipython3]
+----
+mall_data = pd.read_csv ('C:\\Users\\S1718C\\Desktop\\Mall_customers.csv', # File reading
+                        names = ['Gender', 'Age', 'AnnualIncome', 'SpendingScore'], # Creating headers
+                        index_col = 0, header = 1)
+
+mall_data.head() # running mall_data
+----
+
+
++*Out[2]:*+
+----
+[cols=",,,,",options="header",]
+|==========================================
+| |Gender |Age |AnnualIncome |SpendingScore
+|2 |Male |21 |15 |81
+|3 |Female |20 |16 |6
+|4 |Female |23 |16 |77
+|5 |Female |31 |17 |40
+|6 |Female |22 |17 |76
+|==========================================
+----
+
+
++*In[3]:*+
+[source, ipython3]
+----
+features = mall_data [['AnnualIncome', 'SpendingScore']]
+features.head()
+----
+
+
++*Out[3]:*+
+----
+[cols=",,",options="header",]
+|=============================
+| |AnnualIncome |SpendingScore
+|2 |15 |81
+|3 |16 |6
+|4 |16 |77
+|5 |17 |40
+|6 |17 |76
+|=============================
+----
+
+
++*In[4]:*+
+[source, ipython3]
+----
+x = np.array(features)
+x [:10]
+----
+
+
++*Out[4]:*+
+----array([[15, 81],
+       [16,  6],
+       [16, 77],
+       [17, 40],
+       [17, 76],
+       [18,  6],
+       [18, 94],
+       [19,  3],
+       [19, 72],
+       [19, 14]], dtype=int64)----
+
+
++*In[6]:*+
+[source, ipython3]
+----
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+----
+
+
++*In[7]:*+
+[source, ipython3]
+----
+possible_k_values = range (2, 50)
+----
+
+
++*In[8]:*+
+[source, ipython3]
+----
+sum_of_squared_distances = [] #Sum of squared distances of samples to their closest cluster center, smaller values mean better clustering
+
+for k in possible_k_values:
+    k_means = KMeans (n_clusters = k)
+    k_means = k_means.fit(x)
+    
+    sum_of_squared_distances.append(k_means.inertia_)
+    
+sum_of_squared_distances[:20]
+----
+
+
++*Out[8]:*+
+----[180732.34851889685,
+ 105373.18846928165,
+ 72749.98793276899,
+ 43972.8507048507,
+ 36784.93984619042,
+ 29797.78956898704,
+ 24512.26681096681,
+ 21599.71812141347,
+ 19444.30959260378,
+ 17694.056641209132,
+ 15816.566752230037,
+ 14044.452100840335,
+ 13310.88200752316,
+ 11796.985067873304,
+ 10639.390001665,
+ 10069.576956931956,
+ 9189.149492174492,
+ 8795.171918914417,
+ 8089.790618939884,
+ 7568.177365689866]----
+
+
++*In[9]:*+
+[source, ipython3]
+----
+fig, ax = plt.subplots (figsize = (12, 8))
+plt.plot(possible_k_values, sum_of_squared_distances, 'rx-')
+plt.xlabel('k')
+plt.ylabel('Sum of squared distances')
+
+plt.title('elbow plot for optimal number of clusters')
+plt.show()
+----
+
+
++*Out[9]:*+
+----
+![png](output_7_0.png)
+----
+
+
++*In[10]:*+
+[source, ipython3]
+----
+scores_df = pd.DataFrame ({'k_value' : possible_k_values,
+                          'score' : sum_of_squared_distances})
+scores_df.head(10)
+----
+
+
++*Out[10]:*+
+----
+[cols=",,",options="header",]
+|===================
+| |k_value |score
+|0 |2 |180732.348519
+|1 |3 |105373.188469
+|2 |4 |72749.987933
+|3 |5 |43972.850705
+|4 |6 |36784.939846
+|5 |7 |29797.789569
+|6 |8 |24512.266811
+|7 |9 |21599.718121
+|8 |10 |19444.309593
+|9 |11 |17694.056641
+|===================
+----
+
+
++*In[11]:*+
+[source, ipython3]
+----
+def silhouette_score_kmeans(k, data):
+    kmean = KMeans(n_clusters = k).fit(data)
+    
+    silhou_score = silhouette_score(data, kmean.labels_)
+    
+    return silhou_score
+----
+
+
++*In[12]:*+
+[source, ipython3]
+----
+silhouette_score_per_k = []
+
+for k in possible_k_values:
+    silhou_score = silhouette_score_kmeans (k,x)
+    
+    silhouette_score_per_k.append(silhou_score)
+    
+silhouette_score_per_k[:20]
+----
+
+
++*Out[12]:*+
+----[0.28606583850377226,
+ 0.46824208542590284,
+ 0.4970171432340684,
+ 0.5552295017995841,
+ 0.5391848396061909,
+ 0.5282300585392127,
+ 0.4607082086827822,
+ 0.4589883137610218,
+ 0.4492198026012393,
+ 0.43967218589106355,
+ 0.4288540078459933,
+ 0.4168173442694188,
+ 0.4292316047823687,
+ 0.4118054181106544,
+ 0.42679473069169466,
+ 0.4217119462215231,
+ 0.41504951834194764,
+ 0.41844400521793074,
+ 0.4125510266429098,
+ 0.424218177560016]----
+
+
++*In[13]:*+
+[source, ipython3]
+----
+scores_df = pd.DataFrame ({'k_value': possible_k_values,
+                          'score' : silhouette_score_per_k})
+scores_df.head(10)
+----
+
+
++*Out[13]:*+
+----
+[cols=",,",options="header",]
+|================
+| |k_value |score
+|0 |2 |0.286066
+|1 |3 |0.468242
+|2 |4 |0.497017
+|3 |5 |0.555230
+|4 |6 |0.539185
+|5 |7 |0.528230
+|6 |8 |0.460708
+|7 |9 |0.458988
+|8 |10 |0.449220
+|9 |11 |0.439672
+|================
+----
+
+
++*In[14]:*+
+[source, ipython3]
+----
+scores_df.tail(10)
+----
+
+
++*Out[14]:*+
+----
+[cols=",,",options="header",]
+|================
+| |k_value |score
+|38 |40 |0.432997
+|39 |41 |0.433010
+|40 |42 |0.437831
+|41 |43 |0.426441
+|42 |44 |0.444316
+|43 |45 |0.426493
+|44 |46 |0.442058
+|45 |47 |0.425381
+|46 |48 |0.448237
+|47 |49 |0.426802
+|================
+----
+
+
++*In[15]:*+
+[source, ipython3]
+----
+fig, ax = plt.subplots(figsize=(12,8))
+
+plt.plot(possible_k_values, silhouette_score_per_k, 'gx-')
+plt.xlabel ('k')
+plt.ylabel('Silhouette Score')
+
+plt.title('Silhouette score per number of clusters')
+plt.show()
+----
+
+
++*Out[15]:*+
+----
+![png](output_13_0.png)
+----
+
+
++*In[17]:*+
+[source, ipython3]
+----
+max_score_index = scores_df[scores_df['score'] == max(scores_df['score'])].index[0]
+scores_df.iloc[max_score_index]
+----
+
+
++*Out[17]:*+
+----k_value    5.00000
+score      0.55523
+Name: 3, dtype: float64----
+
+
++*In[18]:*+
+[source, ipython3]
+----
+best_k_value = int(scores_df.iloc[max_score_index].k_value)
+best_k_value
+----
+
+
++*Out[18]:*+
+----5----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
