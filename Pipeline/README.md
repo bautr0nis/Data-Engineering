@@ -1,4 +1,3 @@
-# Analytics Pipeline
 
 * `log_generat.py` -- generates fake webserver logs.
 * `store_log.py` -- parses the logs and stores them in a SQLite database.
